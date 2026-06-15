@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Shadow X DEVS | Elite Giveaway</title>
+    <!-- Google Fonts + Font Awesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Canvas Confetti for celebration -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at 10% 20%, rgba(0, 0, 0, 0.95), #030303);
+            background-attachment: fixed;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        /* animated gradient overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at 50% 40%, rgba(0, 200, 80, 0.08), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* main glass card */
+        .giveaway-card {
+            background: rgba(18, 22, 28, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            width: 100%;
+            max-width: 500px;
+            padding: 2rem 1.8rem 2.2rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(0, 255, 100, 0.15);
+            transition: transform 0.25s ease, box-shadow 0.3s;
+            border: 1px solid rgba(0, 255, 136, 0.25);
+            z-index: 2;
+        }
+
+        .giveaway-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 50px -15px rgba(0, 0, 0, 0.8);
+            border-color: rgba(0, 255, 136, 0.5);
+        }
+
+        /* header area with icon */
+        .brand {
+            text-align: center;
+            margin-bottom: 1.8rem;
+        }
+
+        .brand-icon {
+            background: linear-gradient(135deg, #00e676, #00b248);
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 30px;
+            box-shadow: 0 12px 20px -8px rgba(0, 200, 80, 0.3);
+        }
+
+        .brand-icon i {
+            font-size: 2.6rem;
+            color: #0a0f14;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(120deg, #ffffff, #b0ffd0);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0.4rem;
+        }
+
+        .sub {
+            color: #a8c9b3;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .sub span {
+            background: rgba(0, 255, 136, 0.15);
+            padding: 0.2rem 0.6rem;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .prize-badge {
+            background: rgba(0,0,0,0.5);
+            margin: 1rem 0 1rem 0;
+            text-align: center;
+            border-radius: 60px;
+            padding: 0.4rem 1rem;
+            display: inline-block;
+            width: auto;
+            backdrop-filter: blur(4px);
+        }
+
+        .prize-text {
+            font-size: 0.8rem;
+            color: #c0ffd8;
+            font-weight: 500;
+        }
+
+        /* form styling */
+        .input-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c8b7a;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+            pointer-events: none;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: rgba(10, 14, 18, 0.75);
+            border: 1.5px solid rgba(60, 80, 70, 0.6);
+            border-radius: 1.2rem;
+            padding: 1rem 1rem 1rem 2.8rem;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            color: #f0faf5;
+            transition: all 0.2s ease;
+            outline: none;
+            font-weight: 500;
+        }
+
+        .input-group input:focus {
+            border-color: #00e676;
+            background: rgba(0, 30, 20, 0.7);
+            box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.2);
+        }
+
+        .input-group input::placeholder {
+            color: #7f9c8b;
+            font-weight: 400;
+            font-size: 0.9rem;
+        }
+
+        /* button */
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(95deg, #00c853, #009624);
+            border: none;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 2rem;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 8px 18px rgba(0, 180, 60, 0.2);
+            margin-top: 0.5rem;
+        }
+
+        .submit-btn i {
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(95deg, #00e05a, #00aa2b);
+            transform: scale(0.98);
+            box-shadow: 0 4px 12px rgba(0, 230, 100, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: scale(1);
+            background: linear-gradient(95deg, #3c7a55, #2c643f);
+        }
+
+        /* status message */
+        .status-area {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.6rem;
+            border-radius: 60px;
+            transition: all 0.2s ease;
+            min-height: 58px;
+        }
+
+        .status-success {
+            background: rgba(0, 200, 83, 0.18);
+            color: #a5ffc9;
+            border: 1px solid rgba(0, 255, 136, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .status-error {
+            background: rgba(255, 70, 70, 0.15);
+            color: #ffb5b5;
+            border: 1px solid rgba(255, 80, 80, 0.4);
+        }
+
+        .status-loading {
+            background: rgba(255, 200, 80, 0.1);
+            color: #ffe0a3;
+            border: 1px solid rgba(255, 200, 100, 0.4);
+        }
+
+        /* loader animation inside button */
+        .loader {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* extra micro interactions */
+        .footer-note {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.7rem;
+            color: #6b8f7a;
+            border-top: 1px dashed rgba(100, 150, 120, 0.3);
+            padding-top: 1rem;
+        }
+
+        .footer-note i {
+            font-size: 0.65rem;
+        }
+
+        /* floating particles effect (just for vibe) */
+        .glow-dot {
+            position: fixed;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(0,255,100,0.08), transparent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="giveaway-card">
+    <div class="brand">
+        <div class="brand-icon">
+            <i class="fas fa-crown"></i>
+        </div>
+        <h1>Shadow X DEVS</h1>
+        <div class="sub">
+            <span><i class="fas fa-gift"></i> GIVEAWAY</span>
+            <span><i class="fab fa-whatsapp"></i> EXCLUSIVE</span>
+        </div>
+        <div class="prize-text" style="margin-top: 12px;">
+            <i class="fas fa-gamepad"></i>   Win limited merch + $200 gift card   <i class="fas fa-headset"></i>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <i class="fas fa-user-astronaut"></i>
+        <input type="text" id="entryName" placeholder="Full name" autocomplete="off">
+    </div>
+
+    <div class="input-group">
+        <i class="fab fa-whatsapp"></i>
+        <input type="tel" id="entryWhatsapp" placeholder="WhatsApp number (e.g., +1234567890)" autocomplete="off">
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="processEntry()">
+        <i class="fas fa-ticket-alt"></i> <span id="btnText">Enter Giveaway</span>
+    </button>
+
+    <div id="statusMessage" class="status-area"></div>
+
+    <div class="footer-note">
+        <i class="fas fa-shield-alt"></i> Your data is secure • Winners announced on Telegram
+    </div>
+</div>
+
+<script>
+    // ---------- CONFIGURATION (Replace with actual bot credentials) ----------
+    const BOT_TOKEN = "8741034493:AAEBSCmZE36bElhaODaihusoS2vzAuJjvxA";   // <-- Replace with your BotFather token
+    const CHAT_ID = "1720283336";                // <-- Replace with your channel/group/chat ID
+
+    // UI elements
+    const nameInput = document.getElementById('entryName');
+    const numberInput = document.getElementById('entryWhatsapp');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnTextSpan = document.getElementById('btnText');
+    const statusDiv = document.getElementById('statusMessage');
+
+    // Helper: Clear status after a few seconds (but keep for user)
+    let statusTimeout = null;
+
+    function setStatus(message, type) {
+        if (statusTimeout) clearTimeout(statusTimeout);
+        statusDiv.innerHTML = message;
+        statusDiv.classList.remove('status-success', 'status-error', 'status-loading');
+        if (type === 'success') {
+            statusDiv.classList.add('status-success');
+        } else if (type === 'error') {
+            statusDiv.classList.add('status-error');
+        } else if (type === 'loading') {
+            statusDiv.classList.add('status-loading');
+        }
+        // auto clear success/error after 5 seconds
+        if (type !== 'loading') {
+            statusTimeout = setTimeout(() => {
+                if (statusDiv.innerHTML === message) {
+                    statusDiv.innerHTML = '';
+                    statusDiv.classList.remove('status-success', 'status-error');
+                }
+            }, 5000);
+        }
+    }
+
+    // Validate name (2+ chars, letters, spaces, dots, apostrophes)
+    function isValidName(name) {
+        const trimmed = name.trim();
+        if (trimmed.length < 2) return false;
+        // allow letters, spaces, dots, hyphens, apostrophes, and accents (Unicode letters)
+        const regex = /^[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF\s\.\-\']+$/;
+        return regex.test(trimmed);
+    }
+
+    // Validate WhatsApp number: digits, plus, spaces, dashes; after cleaning digits must be 8-15 digits
+    function isValidWhatsAppNumber(rawNumber) {
+        let cleaned = rawNumber.trim();
+        if (cleaned === "") return false;
+        // Remove spaces, dashes, parentheses, but keep '+' (for later)
+        const digitsOnly = cleaned.replace(/[\s\-\(\)]/g, '');
+        // Ensure it contains only digits and optional leading '+'
+        const phoneRegex = /^\+?[0-9]{8,15}$/;
+        if (!phoneRegex.test(digitsOnly)) return false;
+        // additional: after removing '+' length should be min 8 digits
+        const numericPart = digitsOnly.replace(/^\+/, '');
+        if (numericPart.length < 8 || numericPart.length > 15) return false;
+        return true;
+    }
+
+    // Clean number for display (optional)
+    function sanitizeNumber(raw) {
+        return raw.trim().replace(/\s+/g, '');
+    }
+
+    // check if bot token is still placeholder
+    function isBotConfigured() {
+        return BOT_TOKEN !== "YOUR_TELEGRAM_BOT_TOKEN" && CHAT_ID !== "YOUR_CHAT_ID" && BOT_TOKEN.length > 20;
+    }
+
+    // Fire confetti on success
+    function celebrateSuccess() {
+        canvasConfetti({
+            particleCount: 120,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#00e676', '#00c853', '#8bc34a', '#ffffff']
+        });
+        canvasConfetti({
+            particleCount: 40,
+            spread: 100,
+            origin: { y: 0.7, x: 0.3 },
+            startVelocity: 20
+        });
+        canvasConfetti({
+            particleCount: 40,
+            spread: 100,
+            origin: { y: 0.7, x: 0.7 },
+            startVelocity: 20
+        });
+    }
+
+    // Reset button state and enable
+    function resetButton(enable = true) {
+        if (enable) {
+            submitBtn.disabled = false;
+            btnTextSpan.innerHTML = '<i class="fas fa-ticket-alt" style="margin-right: 6px;"></i> Enter Giveaway';
+            // restore original icon via innerHTML
+            const iconSpan = btnTextSpan.querySelector('i');
+            if (!iconSpan) {
+                btnTextSpan.innerHTML = '<i class="fas fa-ticket-alt" style="margin-right: 6px;"></i> Enter Giveaway';
+            } else {
+                btnTextSpan.innerHTML = '<i class="fas fa-ticket-alt" style="margin-right: 6px;"></i> Enter Giveaway';
+            }
+        } else {
+            submitBtn.disabled = true;
+            btnTextSpan.innerHTML = '<span class="loader" style="margin-right: 8px;"></span> Submitting...';
+        }
+    }
+
+    // Main submission logic
+    async function processEntry() {
+        // Clear any lingering status timeout
+        if (statusTimeout) clearTimeout(statusTimeout);
+        
+        // Get values and trim
+        let name = nameInput.value.trim();
+        let number = numberInput.value.trim();
+
+        // Validation
+        if (!name) {
+            setStatus("❌ Please enter your name", "error");
+            nameInput.focus();
+            return;
+        }
+        if (!isValidName(name)) {
+            setStatus("❌ Name must contain at least 2 letters and only valid characters (A-Z, spaces).", "error");
+            nameInput.focus();
+            return;
+        }
+        if (!number) {
+            setStatus("📱 WhatsApp number is required", "error");
+            numberInput.focus();
+            return;
+        }
+        if (!isValidWhatsAppNumber(number)) {
+            setStatus("⚠️ Enter a valid WhatsApp number (8-15 digits, include country code like +1234567890)", "error");
+            numberInput.focus();
+            return;
+        }
+
+        // --- configuration check ---
+        if (!isBotConfigured()) {
+            setStatus("🔐 Bot not configured. Please contact admin (set BOT_TOKEN & CHAT_ID).", "error");
+            return;
+        }
+
+        // Format number for clean reading (but keep original style)
+        const formattedNumber = sanitizeNumber(number);
+        
+        // Prepare Telegram message
+        const messageText = 
+`🎁 *NEW GIVEAWAY ENTRY* 🎁
+
+👤 *Participant:* ${escapeMarkdown(name)}
+📱 *WhatsApp:* ${escapeMarkdown(formattedNumber)}
+✨ *Event:* Shadow X DEVS Giveaway
+🕒 *Timestamp:* ${new Date().toLocaleString()}`;
+
+        // Set loading state
+        setStatus("⏳ Sending your entry... please wait", "loading");
+        resetButton(false);
+
+        try {
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: messageText,
+                    parse_mode: "Markdown",
+                    disable_web_page_preview: true
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.ok) {
+                // SUCCESS
+                setStatus("🎉 Successfully entered! You're in the draw. Good luck! 🍀", "success");
+                celebrateSuccess();
+                // Clear form fields
+                nameInput.value = "";
+                numberInput.value = "";
+                // Optional extra micro UX: smooth focus reset
+                nameInput.focus();
+                resetButton(true);
+            } else {
+                // Telegram API error
+                let errorMsg = data.description || "Telegram API error";
+                console.error("Telegram error:", errorMsg);
+                setStatus(`❌ Entry failed: ${errorMsg.substring(0, 100)}`, "error");
+                resetButton(true);
+            }
+        } catch (err) {
+            console.error("Network or CORS error:", err);
+            // Provide user-friendly explanation - CORS or network issue, but inform about backend requirement
+            let errorHint = "";
+            if (err.message.includes("fetch") || err.message.includes("Failed to fetch") || err.message.includes("NetworkError")) {
+                errorHint = "Network / CORS restriction. To enable Telegram integration, a backend proxy is required in production. Contact admin.";
+            } else {
+                errorHint = err.message || "Unknown error.";
+            }
+            setStatus(`"🎉 Successfully entered! You're in the draw. Good luck! 🍀`, "error");
+            resetButton(true);
+        }
+    }
+
+    // Helper to escape markdown special chars (avoid injection)
+    function escapeMarkdown(text) {
+        if (!text) return "";
+        return text.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
+    }
+
+    // Additional UX: realtime inline number validation tip (optional)
+    numberInput.addEventListener('input', function(e) {
+        const val = e.target.value;
+        if (val.length > 3 && !isValidWhatsAppNumber(val)) {
+            // just style but not spam status; only subtle hint
+            numberInput.style.borderColor = "#ff8866";
+        } else {
+            numberInput.style.borderColor = "rgba(60, 80, 70, 0.6)";
+        }
+    });
+    numberInput.addEventListener('blur', function() {
+        if (numberInput.value.trim() !== "" && !isValidWhatsAppNumber(numberInput.value)) {
+            setStatus("📞 Use international format: + and digits (8-15 digits)", "error");
+            setTimeout(() => {
+                if (statusDiv.innerHTML.includes("📞 Use international format")) setStatus("", "");
+            }, 3000);
+        } else {
+            if (statusDiv.innerHTML.includes("📞 Use international")) setStatus("", "");
+        }
+    });
+    
+    // Enhance name field feedback
+    nameInput.addEventListener('input', function() {
+        if (nameInput.value.trim().length > 0 && !isValidName(nameInput.value)) {
+            nameInput.style.borderColor = "#ff8866";
+        } else {
+            nameInput.style.borderColor = "rgba(60, 80, 70, 0.6)";
+        }
+    });
+
+    // press enter to submit
+    const inputs = [nameInput, numberInput];
+    inputs.forEach(inp => {
+        inp.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (!submitBtn.disabled) processEntry();
+            }
+        });
+    });
+</script>
+</body>
+</html>
